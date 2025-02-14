@@ -1,0 +1,48 @@
+{
+    "name": "jmrashed/laravel-cryptographic-signatures",
+    "description": "A Laravel package for cryptographic signature generation and verification.",
+    "keywords": [
+        "laravel",
+        "cryptography",
+        "signature",
+        "security",
+        "authentication"
+    ],
+    "authors": [
+        {
+            "name": "Md Rasheduzzaman",
+            "email": "jmrashed@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jmrashed\\LaravelCryptographicSignatures\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.4|^8.0",
+        "laravel/framework": "^8.0"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "post-install-cmd": [
+            "@php artisan vendor:publish --tag=config"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jmrashed/laravel-cryptographic-signatures"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/jmrashed/laravel-cryptographic-signatures/issues",
+        "email": "jmrashed@gmail.com"
+    }
+}
