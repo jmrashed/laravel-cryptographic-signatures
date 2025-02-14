@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 namespace Jmrashed\LaravelCryptographicSignatures\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -15,7 +14,15 @@ class CryptoSignaturesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Any package assets like config, routes, or views would be registered here
+        // Publish config/cryptosignature.php
+        $this->publishes([
+            __DIR__ . '/../config/cryptosignature.php' => config_path('cryptosignature.php'),
+        ], 'config');
+
+        // Publish keys to storage/keys
+        $this->publishes([
+            __DIR__ . '/../storage/keys' => storage_path('keys'),
+        ], 'keys');
     }
 
     /**
@@ -29,15 +36,5 @@ class CryptoSignaturesServiceProvider extends ServiceProvider
             return new CryptoSignatureService();
         });
         $this->app->alias(CryptoSignature::class, 'cryptosignature');
-
-        // publish config/cryptosignature.php
-        $this->publishes([
-            __DIR__ . '/../config/cryptosignature.php' => config_path('cryptosignature.php'),
-        ], 'config');
-
-        // publish keys
-        $this->publishes([
-            __DIR__ . '/../storage/keys' => storage_path('keys'),
-        ], 'keys');
     }
 }
