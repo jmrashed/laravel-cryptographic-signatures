@@ -25,11 +25,27 @@ This will create a `cryptosignature.php` file in the `config/` directory, where 
 In your `.env` file, set the paths to your private and public keys:
 
 ```env
-CRYPTO_PRIVATE_KEY=/path/to/private.key
-CRYPTO_PUBLIC_KEY=/path/to/public.key
+CRYPTO_PRIVATE_KEY=storage/keys/private.key
+CRYPTO_PUBLIC_KEY=storage/keys/public.key
+```
+
+How to generate RSA keys: storage/keys/private.key and storage/keys/public.key
+
+```bash 
+openssl genrsa -out storage/keys/private.key 2048
+openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
+
 ```
 
 Make sure your keys are stored securely in the specified paths.
+
+
+### How to publish config and keys 
+
+```bash
+php artisan vendor:publish --provider="Jmrashed\LaravelCryptographicSignatures\Providers\CryptoSignaturesServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Jmrashed\LaravelCryptographicSignatures\Providers\CryptoSignaturesServiceProvider" --tag="keys"
+```
 
 ## Usage
 

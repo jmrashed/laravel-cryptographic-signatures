@@ -6,32 +6,52 @@ use Exception;
 
 class CryptoSignatureService
 {
-    private $privateKey;
-    private $publicKey;
+    protected $privateKey;
+    protected $publicKey;
 
-    public function __construct($privateKeyPath = null, $publicKeyPath = null)
+    public function __construct()
     {
-        $this->privateKey = $privateKeyPath ?: config('cryptosignature.private_key');
-        $this->publicKey = $publicKeyPath ?: config('cryptosignature.public_key');
+        // Load your private and public keys
+        $this->privateKey = config('cryptosignature.private_key');
+        $this->publicKey = config('cryptosignature.public_key');
     }
 
+    /**
+     * Generate a cryptographic signature for the provided data.
+     *
+     * @param  string $data
+     * @return string
+     * @throws Exception
+     */
     public function generateSignature(string $data): string
     {
-        try {
-            openssl_sign($data, $signature, file_get_contents($this->privateKey), OPENSSL_ALGO_SHA256);
-            return base64_encode($signature);
-        } catch (Exception $e) {
-            throw new Exception('Signature generation failed: ' . $e->getMessage());
+        $privateKey = openssl_pkey_get_private(file_get_contents($this->privateKey));
+        
+        if (!$privateKey) {
+            throw new Exception('Unable to load private key');
         }
+
+        openssl_sign($data, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        openssl_free_key($privateKey);
+
+        return base64_encode($signature);
     }
 
+    /**
+     * Verify a cryptographic signature for the provided data.
+     *
+     * @param  string $data
+     * @param  string $signature
+     * @return bool
+     */
     public function verifySignature(string $data, string $signature): bool
     {
-        try {
-            $isValid = openssl_verify($data, base64_decode($signature), file_get_contents($this->publicKey), OPENSSL_ALGO_SHA256);
-            return $isValid === 1;
-        } catch (Exception $e) {
-            throw new Exception('Signature verification failed: ' . $e->getMessage());
+        $publicKey = openssl_pkey_get_public(file_get_contents($this->publicKey));
+
+        if (!$publicKey) {
+            return false;
         }
+
+        return openssl_verify($data, base64_decode($signature), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
 }
